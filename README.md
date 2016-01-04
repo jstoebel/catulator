@@ -1,2 +1,1 @@
-# catulator
-a calculator, but cats!
+This is a basic calculator implemented in Javascript

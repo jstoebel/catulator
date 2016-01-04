@@ -52,13 +52,9 @@ function calculator () {
 
 		if (valid_operators.indexOf(operator) > -1) {
 			//valid operator
-			if (this.operator == operator) {
-				//if its the same operator, go ahead and compute
-				this.operator = operator;
-				this.compute();
-			} else {
-				this.operator = operator
-			}
+			//if its the same operator, go ahead and compute
+			this.compute();
+			this.operator = operator;
 			
 		} else {
 			console.log("Illegal operator.")
@@ -110,7 +106,7 @@ function calculator () {
 
 			if (this.buffer.indexOf(token) == -1){
 				//no decimal found!
-				
+
 				this.buffer += token
 				this.display(this.buffer)
 			}		
