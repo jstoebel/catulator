@@ -24,6 +24,18 @@
     border: solid white 1px;
 }
 
+.dbl-square {
+    float:left;
+    position: relative;
+    width: 50%;
+    padding-bottom : 25%; /* = width for a 1:1 aspect ratio */
+    /*margin:1.5%;*/
+    /*background-color:#1E1E1E;*/
+    overflow:hidden;
+    border: solid white 1px;
+}
+
+
 .digit {
     /*digit squares*/
     background-color: #b3b3b3;

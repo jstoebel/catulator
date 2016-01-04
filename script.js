@@ -1,7 +1,7 @@
 function calculator () {
 
-	valid_operators = "+-X/";
-	valid_operands = "0123456789."
+	var valid_operators = "+-X/%";
+	var numbers = "0123456789";
 
 	this.buffer = "";		//buffer to collect user input
 
@@ -31,6 +31,9 @@ function calculator () {
 				case "/":
 					this.left_operand = this.left_operand / this.right_operand
 					break
+				case "%":
+					this.left_operand = this.left_operand % this.right_operand
+					break
 			}
 
 		this.display(this.left_operand);
@@ -49,11 +52,14 @@ function calculator () {
 
 		if (valid_operators.indexOf(operator) > -1) {
 			//valid operator
-			this.operator = operator;
-
-			//do we have everything we need to compute?
-			// this.compute_prep();
-			this.compute();
+			if (this.operator == operator) {
+				//if its the same operator, go ahead and compute
+				this.operator = operator;
+				this.compute();
+			} else {
+				this.operator = operator
+			}
+			
 		} else {
 			console.log("Illegal operator.")
 		}
@@ -85,10 +91,11 @@ function calculator () {
 				//call operand_push
 				//clear buffer
 
-		if (valid_operands.indexOf(token) > -1) {
+		if (numbers.indexOf(token) > -1) {
 			//digit
 			this.buffer += token
 			this.display(this.buffer)
+
 		} else if (valid_operators.indexOf(token) > -1) {
 			//operator
 			this.operand_push(this.buffer)
@@ -96,7 +103,19 @@ function calculator () {
 			this.operator_push(token)
 			// this.compute()
 
-		}
+		} else if (token == "."){
+			//special case for decimal.
+			//don't allow a decimal into the buffer if there
+			//is already one
+
+			if (this.buffer.indexOf(token) == -1){
+				//no decimal found!
+				
+				this.buffer += token
+				this.display(this.buffer)
+			}		
+
+		} 
 	};
 
 	this.equal = function() {
@@ -113,17 +132,30 @@ function calculator () {
 		//pre: this.memory is not null
 		//post: divides this.memory by 100 and assigns to itself
 
-		if (this.memory !== null) {
-			this.memory /= 100;
-			this.update()
+		if (this.left_operand !== null) {
+			this.left_operand /= 100;
+			this.display(this.left_operand)
 		}
 	}
 
 	this.display = function(val) {
 		//pre: none
 		//post: updates the display with val
+			//val is rounded to 9 decimal places
 
-		$("#display").text(val);
+		if (isNumeric(val)) {
+			var rounded = decimal_round(val, 7)
+			if (String(rounded).length >= 9) {
+				var final = rounded.toExponential(4)
+			} else {
+				var final = rounded;
+			}
+			
+		} else {
+			//not a number, just display it
+			var final = val;
+		}
+			$("#display").text(final);
 	};
 
 	this.clear = function() {
@@ -134,15 +166,24 @@ function calculator () {
 		this.operator = null;
 		this.left_operand = null;
 		this.right_operand = null;
-		this.display("")
+		this.display(0)
 
 	}
 
 }
 
-function isNumeric(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
+function isNumeric(str) {
+	//pre: a string
+	//post: returns if str is a valid number
+	return !isNaN(parseFloat(str)) && isFinite(str) && str !== "";
 }
+
+var decimal_round  = function(n,d){
+    
+    var as_float = parseFloat(n);
+    return Math.floor(as_float * Math.pow(10, d)) / Math.pow(10, d)
+};
+
 
 $(document).ready(function() {
 	console.log("document ready")
